@@ -1,0 +1,66 @@
+= Presenter-Service
+
+== Types
+
+.PresenterResult
+[source, indent=5]
+----
+type PresenterResult = object | PresenterError;
+----
+
+== Exceptions
+
+.PresenterException
+[source, indent=5]
+----
+Exception PresenterException(message: string);
+----
+
+== Interfaces
+
+.Presenter
+[source, indent=5]
+----
+Interface Presenter {
+    presenter: string;
+    data: object;
+}
+----
+[small]#This interface specifies what presenter is used with the payload for the call.#
+
+.PresenterError
+[source, indent=5]
+----
+Interface PresenterError {
+    error: object;
+}
+----
+[small]#A common format for errors.#
+
+== Methods
+
+.handle_request
+[source, indent=5]
+----
+handle_request(payload: Presenter[], user_id: Id): PresenterResult[]
+----
+
+[small]#Executes some presenting function on the server. The term "presenting" means a non writing (or modifying) idempotent request There may be some side-effect allowed (like tracking calls to one presenter), but the main purpose is to get data of the server, which is not autoupdate-, projector-, or icc-data. Some purposes may be:#
+
+[small]#- aggregating of login data#
+
+[small]#- managing of whoami, if additional data is needed, that the auth service doesn't provide#
+
+[small]#- To get history points#
+
+[small]#- To get history data#
+
+[small]#- To get the installed version#
+
+[small]#- To query statistics#
+
+[small]#- To calculate recursive trees (e.g. origins of motions; not possible with the autoupdate service)#
+
+[small]#- to synchronize the servertime for countdowns#
+
+[small]#@throws PresenterException This exception might be thrown, if there was an server error (Http-500-equivalent). For user error (e.g. wrong data) use the PresenterError interface.#
